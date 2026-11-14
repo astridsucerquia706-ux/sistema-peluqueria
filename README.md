@@ -119,7 +119,7 @@ Abre en el navegador **http://localhost:5173**.
 
 | Correo | Contraseña |
 | --- | --- |
-| admin@peluqueria.test | CONTRASEÑA_DEL_SEEDER |
+| admin@peluqueria.test | Peluqueria2026 |
 
 Es un usuario **solo de prueba**, creado por `database/seeders/DatabaseSeeder.php`.
 

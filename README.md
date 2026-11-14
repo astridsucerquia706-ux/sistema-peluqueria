@@ -2,10 +2,6 @@
 
 Aplicación web para gestionar las citas de una peluquería. 
 
-**Autora:** Astrid Yulieth Sucerquia
-**Asignaturas:** Ingeniería de Software · Bases de Datos — Institución Universitaria Pascual Bravo, 2026
-
----
 
 ## Funcionalidades
 

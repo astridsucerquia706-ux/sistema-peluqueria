@@ -1,0 +1,405 @@
+
+
+### Prueba A1: consultar clientes SIN iniciar sesión (esperado 401)
+GET http://127.0.0.1:8000/api/clients
+Accept: application/json
+
+### Prueba A2: login con contraseña incorrecta (esperado 401)
+POST http://127.0.0.1:8000/api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@peluqueria.test",
+  "password": "otraClave"
+}
+
+
+### Prueba A3: login correcto (esperado 200 con token)
+# @name login
+POST http://127.0.0.1:8000/api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "admin@peluqueria.test",
+  "password": "Peluqueria2026"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Prueba A4: registrar una recepcionista (esperado 201)
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "María Recepción",
+  "email": "maria@peluqueria.test",
+  "password": "recepcion123",
+  "role_id": 2
+}
+
+### Prueba A5: registrar con un correo que ya existe (esperado 400)
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Otra persona",
+  "email": "admin@peluqueria.test",
+  "password": "clave12345",
+  "role_id": 2
+}
+
+### Prueba A6: ver el usuario con sesión activa (esperado 200)
+GET http://127.0.0.1:8000/api/me
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+
+
+### Prueba 1: crear cliente (esperado 201, id 7)
+POST http://127.0.0.1:8000/api/clients
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Daniela Cardona",
+  "phone": "3008887766",
+  "email": "daniela@correo.com"
+}
+
+### Prueba 2: crear sin nombre (esperado 400)
+POST http://127.0.0.1:8000/api/clients
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "phone": "3008887766"
+}
+
+### Prueba 3: editar cliente 7 (esperado 200)
+PUT http://127.0.0.1:8000/api/clients/7
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Daniela Cardona Ruiz",
+  "phone": "3008887766",
+  "email": "daniela@correo.com"
+}
+
+### Prueba 4: eliminar cliente 7 (esperado 200)
+DELETE http://127.0.0.1:8000/api/clients/7
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 5: consultar cliente eliminado (esperado 404)
+GET http://127.0.0.1:8000/api/clients/7
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+
+
+### Prueba 6: listar servicios con su categoría (esperado 200)
+GET http://127.0.0.1:8000/api/services
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 7: buscar servicios que contengan "corte" (esperado 200)
+GET http://127.0.0.1:8000/api/services?q=corte
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 8: crear servicio con categoría inexistente (esperado 400)
+POST http://127.0.0.1:8000/api/services
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "category_id": 99,
+  "name": "Masaje capilar",
+  "price": 35000,
+  "duration_minutes": 30
+}
+
+### Prueba 9: crear servicio válido (esperado 201)
+POST http://127.0.0.1:8000/api/services
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "category_id": 1,
+  "name": "Masaje capilar",
+  "price": 35000,
+  "duration_minutes": 30
+}
+
+### Prueba 10: crear categoría repetida (esperado 400)
+POST http://127.0.0.1:8000/api/categories
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Cabello"
+}
+
+### Prueba 11: eliminar categoría que tiene servicios (esperado 400)
+DELETE http://127.0.0.1:8000/api/categories/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+
+
+
+### Prueba 12: listar estilistas con servicios y horarios (esperado 200)
+GET http://127.0.0.1:8000/api/stylists
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 13: crear estilista con servicios (esperado 201)
+POST http://127.0.0.1:8000/api/stylists
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Paula Mejía",
+  "phone": "3013332211",
+  "service_ids": [1, 3]
+}
+
+### Prueba 14: crear estilista con un servicio inexistente (esperado 400)
+POST http://127.0.0.1:8000/api/stylists
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Pedro Ruiz",
+  "phone": "3024445566",
+  "service_ids": [1, 99]
+}
+
+### Prueba 15: horario que se cruza con el de Carlos el lunes (esperado 400)
+POST http://127.0.0.1:8000/api/schedules
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "stylist_id": 1,
+  "day_of_week": "lunes",
+  "start_time": "12:00",
+  "end_time": "14:00"
+}
+
+### Prueba 16: hora de fin antes que la de inicio (esperado 400)
+POST http://127.0.0.1:8000/api/schedules
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "stylist_id": 1,
+  "day_of_week": "sábado",
+  "start_time": "13:00",
+  "end_time": "09:00"
+}
+
+### Prueba 17: horario válido para Carlos el sábado (esperado 201)
+POST http://127.0.0.1:8000/api/schedules
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "stylist_id": 1,
+  "day_of_week": "sábado",
+  "start_time": "09:00",
+  "end_time": "13:00"
+}
+
+
+### Prueba 18: agendar turno de Ana con Carlos, corte + barba (esperado 201)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 1,
+  "stylist_id": 1,
+  "date": "2026-11-09",
+  "time": "10:00",
+  "service_ids": [1, 5]
+}
+
+### Prueba 19: turno que se cruza con el anterior (esperado 400)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 2,
+  "stylist_id": 1,
+  "date": "2026-11-09",
+  "time": "10:30",
+  "service_ids": [1]
+}
+
+### Prueba 20: Mateo no trabaja los lunes (esperado 400)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 2,
+  "stylist_id": 3,
+  "date": "2026-11-09",
+  "time": "10:00",
+  "service_ids": [1]
+}
+
+### Prueba 21: Carlos no hace manicure (esperado 400)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 2,
+  "stylist_id": 1,
+  "date": "2026-11-10",
+  "time": "10:00",
+  "service_ids": [7]
+}
+
+### Prueba 22: fecha en el pasado (esperado 400)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 2,
+  "stylist_id": 1,
+  "date": "2026-10-01",
+  "time": "10:00",
+  "service_ids": [1]
+}
+
+### Prueba 23: buscar turnos de "Ana" (esperado 200)
+GET http://127.0.0.1:8000/api/appointments?q=Ana
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 24: cancelar el turno 1 (esperado 200)
+DELETE http://127.0.0.1:8000/api/appointments/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 25: ahora sí, Juan a las 10:30 con Carlos (esperado 201)
+POST http://127.0.0.1:8000/api/appointments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "client_id": 2,
+  "stylist_id": 1,
+  "date": "2026-11-09",
+  "time": "10:30",
+  "service_ids": [1]
+}
+
+
+### Prueba 26: listar métodos de pago (esperado 200)
+GET http://127.0.0.1:8000/api/payment-methods
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 27: pagar un turno que no está atendido (esperado 400)
+POST http://127.0.0.1:8000/api/payments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "appointment_id": 2,
+  "payment_method_id": 1,
+  "amount": 25000
+}
+
+### Prueba 28: marcar el turno 2 como atendido (esperado 200)
+PATCH http://127.0.0.1:8000/api/appointments/2/attend
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 29: pagar $15.000 en efectivo (esperado 201, saldo pendiente 10000)
+POST http://127.0.0.1:8000/api/payments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "appointment_id": 2,
+  "payment_method_id": 1,
+  "amount": 15000
+}
+
+### Prueba 30: pagar $20.000 por Nequi, más de lo que se debe (esperado 400)
+POST http://127.0.0.1:8000/api/payments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "appointment_id": 2,
+  "payment_method_id": 3,
+  "amount": 20000
+}
+
+### Prueba 31: pagar los $10.000 restantes por Nequi (esperado 201, saldo pendiente 0)
+POST http://127.0.0.1:8000/api/payments
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "appointment_id": 2,
+  "payment_method_id": 3,
+  "amount": 10000
+}
+
+### Prueba 32: ver los pagos del turno 2 (esperado 200, dos pagos)
+GET http://127.0.0.1:8000/api/payments?appointment_id=2
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba 33: exportar turnos a CSV (esperado 200 con el contenido del CSV)
+GET http://127.0.0.1:8000/api/appointments/export
+Authorization: Bearer {{token}}
+
+
+### Prueba A7: cerrar sesión (esperado 200)
+POST http://127.0.0.1:8000/api/logout
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Prueba A8: usar el token después de cerrar sesión (esperado 401)
+GET http://127.0.0.1:8000/api/clients
+Accept: application/json
+Authorization: Bearer {{token}}

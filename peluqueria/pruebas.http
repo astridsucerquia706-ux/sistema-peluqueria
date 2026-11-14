@@ -403,3 +403,15 @@ Authorization: Bearer {{token}}
 GET http://127.0.0.1:8000/api/clients
 Accept: application/json
 Authorization: Bearer {{token}}
+
+
+### Prueba CP-06: registrar un usuario sin iniciar sesión (esperado 401)
+POST http://127.0.0.1:8000/api/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Intruso",
+  "email": "intruso@correo.com",
+  "password": "clave12345"
+}

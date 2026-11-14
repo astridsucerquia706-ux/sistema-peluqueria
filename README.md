@@ -1,11 +1,7 @@
 # Sistema de gestión de citas – Peluquería
 
-Aplicación web para gestionar las citas de una peluquería. En lugar de anotarlas a mano en una agenda, por WhatsApp o en un bloc de notas, el personal agenda con unos clics: elige el cliente, el estilista, los servicios, la fecha y la hora, y el sistema comprueba que el estilista esté disponible. También registra los pagos y guarda el historial de cambios de cada cita.
+Aplicación web para gestionar las citas de una peluquería. 
 
-**Autora:** Astrid Yulieth Sucerquia
-**Asignaturas:** Ingeniería de Software · Bases de Datos — Institución Universitaria Pascual Bravo, 2026
-
----
 
 ## Funcionalidades
 
